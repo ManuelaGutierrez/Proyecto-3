@@ -1,0 +1,887 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Delilah Resto",
+    "description": "API para pedidos de comida deliciosa. Como cliente, podras registrarte, ver el listado de nuestros prodcutos y realizar una orden. Los administradores del restaurante tienen la posibilida de recibir pedidos y actualizarlos.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Usuario",
+      "description": "Usuarios registrados"
+    },
+    {
+      "name": "Producto",
+      "description": "Productos disponibles en el sistema"
+    },
+    {
+      "name": "Pedido",
+      "description": "cuando se solicita una orden de compra"
+    }
+  ],
+
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+
+  "paths": {
+    
+    "/Nuevousuario": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "description": "Crear usuarios en la base de datos",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Usuario",
+            "description": "Recibe información específica del usuario como (nombre, correo, teléfono, dirección, clave) para que sean almacenados en la base de datos",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Nuevo usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario Ingresado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Usuario registrado"
+                },
+                "Token": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjoiZGVpc3kiLCJwYXNzIjoiZGVpc3lsaG9sYSIsInJvbCI6ImFkbWluIiwiaWQiOjE1LCJpYXQiOjE2MTk5MDUwNjF9.5gRcHZnmBndyL8m4HJJbnUiKkjUrn1oaox8CUPWeySU"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuario Ya Existe",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Username Inválido: usuarios.username_UNIQUE must be unique"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/login": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Login de un usuario ya registrado",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "login",
+            "description": "se necesita un objecto con NombreUsuario y contraseña para validarlo en la base de datos",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " Usuario autenticado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Usuario Autenticado"
+                },
+                "Token": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjoibWlja2V5IiwicGFzcyI6Im1pY2tleWxob2xhIiwicm9sIjoiYWRtaW4iLCJpYXQiOjE2MTk5MDQ4NTV9.ibzkvbOO4kZaFwTEdsqAg3dpSm1gRv17P30ADC-oMrI"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Usuario Ya Existe",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/MostrarUsuario": {
+      "get": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Mostrar los Usuarios registrados",
+        "description": "Administradores solo podrán ver todos los usuarios registrados, los usuarios que entren a esta ruta solo podrán visualizar su propia información.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjoibWlja2V5IiwicGFzcyI6Im1pY2tleWxob2xhIiwicm9sIjoiYWRtaW4iLCJpYXQiOjE2MTk5MDQ4NTV9.ibzkvbOO4kZaFwTEdsqAg3dpSm1gRv17P30ADC-oMrI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proceso exitoso",
+            "schema": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "ID": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "NombreUsuario": {
+                    "type": "string",
+                    "example": "Manuela"
+                  },
+                  "NombreCompleto": {
+                    "type": "string",
+                    "example": "Manuela Gutierrez Urrego"
+                  },
+                  "Correo": {
+                    "type": "string",
+                    "example": "manuelagu@gmail"
+                  },
+                  "Celular": {
+                    "type": "integer",
+                    "example": 987654312
+                  },
+                  "Direccion": {
+                    "type": "string",
+                    "example": "calle 4"
+                  },
+                  "Contraseña": {
+                    "type": "string",
+                    "example": "Manuela123"
+                  },
+                  "Rol": {
+                    "type": "string",
+                    "example": "Admin"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Si es un usuario no lo deja continuar con el proceso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "No tiene permisos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/CrearProducto": {
+      "post": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Registrar un nuevo producto",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "producto",
+            "description": "se necesita un objecto con los datos básicos(Nombre_producto, precio) del cada producto para guardarlo",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Crearproducto"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Producto ingresado"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "si ya existe un producto con el mismo nombre",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Si es un usuario, no lo dejara continuar",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "No tiene permisos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/MostrarProducto": {
+      "get": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Mostrar los Productos ingresado",
+        "description": "No se necesita Parámetros de ingreso",
+        "responses": {
+          "200": {
+            "description": " Mostrar todos los productos guardados",
+            "schema": {
+              "type": "array",
+              "items": {
+                "properties": {
+                 
+                  "Nombre_producto": {
+                    "type": "string",
+                    "example": "Hamburgesa"
+                  },
+                  "Precio": {
+                    "type": "integer",
+                    "example": 35000
+                  },
+                  "ID": {
+                    "type": "integer",
+                    "example": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/Actualizarproducto": {
+      "put": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Actualizar un Producto",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "update",
+            "description": "Se necesita un objecto con los datos básicos(id, nombre_producto, precio) del producto para actualizarlo",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Actualizarproducto"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Producto Actualizado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Error",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "estado": {
+              "type": "string",
+              "example": "Error  + error"
+            }
+          }
+        }
+      }
+    },
+
+    "/Eliminarproducto": {
+      "delete": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Eliminar un Producto",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "delete",
+            "description": "se necesita un objecto con ID para eliminar el registro asociado.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Eliminarproducto"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto eliminado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Producto Eliminado "
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "example": "Error  + error"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/CrearPedido": {
+      "post": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Registrar Un Nuevo pedido",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Crearpedido",
+            "description": "se necesita un objecto con los datos básicos (estado, id_producto, pago, cantidad, id_usuario) del producto para guardarlo",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CrearPedido"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido guardado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Se Ingreso Pedido Correctamente"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error ",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "example": "NO Se Ingreso Pedido"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/MostrarPedido": {
+      "get": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Registrar Un Nuevo pedido",
+        "description": "No se necesita Parametros de ingreso, pero si es un usuario solo se mostrara los pedidos de ese usuario, si es administrador se mostraran todos",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+      
+        "responses": {
+          "200": {
+            "description": " Mostrar todos los pedidos guardados",
+            "schema": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "ID_Pedido": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "Estado": {
+                    "type": "string",
+                    "example": "Nuevo"
+                  },
+                  "Fecha": {
+                    "type": "string",
+                    "example": "2020-11-02 00:18:00.00"
+                  },
+                  "ID_Producto": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "Nombre": {
+                    "type": "string",
+                    "example": "papas fritas"
+                  },
+                  "Detalle": {
+                    "type": "string",
+                    "example": "papas, ensalada, gaseosa, carnes frias"
+                  },
+                  "Valor_Unitario": {
+                    "type": "integer",
+                    "example": 15000
+                  },
+                  "Cantidad": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "Valor_Total": {
+                    "type": "integer",
+                    "example": 30000
+                  },
+                  "Pago": {
+                    "type": "string",
+                    "example": "Efectivo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+    "/ActualizarPedido": {
+      "put": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Actualizar el estado de un Pedido",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "actualizarpedido",
+            "description": "se necesita un objecto con los datos basicos del producto para actualizarlo con base al ID.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ActualizarPedido"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido actualizado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Actualizado Correctamente"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error Actualizacion",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "example": "Estado NO Fue Actualizado Ó ID NO Existe"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/EliminarPedido": {
+      "delete": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Eliminar un Pedido",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "eliminarpedido",
+            "description": "se necesita un objecto con ID para eliminar el registro asociado.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EliminarPedido"
+            }
+          },
+          {
+            "in": "header",
+            "name": "autenticacion",
+            "description": "Token de administrador admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXN1YXJpbyI6Imp1YW5lcyIsInBhc3MiOiJKVUFORVMxIiwiUm9sIjoiQWRtaW4iLCJpYXQiOjE2MDQ1MTMzNTJ9.Cyr4joqcnbRqBgo6GNwYOnQqSkt3JXP-Ic6KoozsPPY    ---------------------   token como usuario:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MiwiVXN1YXJpbyI6ImVzdGViYW5vIiwicGFzcyI6IkVTVEVCQU4xIiwiUm9sIjoiVXNlciIsImlhdCI6MTYwNDUxMzI0N30.R0TDccx_sjFMHIIou7LeLml0PHd8DdGlHQXo6DtZudI",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "estado": {
+                  "type": "string",
+                  "example": "Pedido Eliminado Correctamente"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Error",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "estado": {
+                "type": "string",
+                "example": "NO Fue Eliminado PEDIDO"
+              }
+            }
+          }
+        }
+      }
+    }
+
+  },
+
+  "definitions": {
+
+    "Login": {
+      "type": "object",
+      "required": [
+        "Nombreusuario",
+        "Contraseña",
+        "Rol"
+      ],
+      "properties": {
+        "Nombreusuario": {
+          "type": "string",
+          "example": "Manuela"
+        },
+        "Contraseña": {
+          "type": "string",
+          "example": "Manuela123"
+        }
+      }
+    },
+
+    "Nuevo usuario": {
+      "type": "object",
+      "required": [
+        "Nombreusuario",
+        "Nombrecompleto",
+        "Correo",
+        "Celular",
+        "Direccion",
+        "Contraseña",
+        "Rol"
+      ],
+      "properties": {
+        "Nombreusuario": {
+          "type": "string",
+          "example": "Manuela"
+        },
+        "Nombrecompleto": {
+          "type": "string",
+          "example": "Manuela Gutierrez"
+        },
+        "Correo": {
+          "type": "string",
+          "example": "manuela.gutierrez@hotmil"
+        },
+        "Celular": {
+          "type": "string",
+          "example": "889564725"
+        },
+        "Direccion": {
+          "type": "string",
+          "example": "calle 55-44"
+        },
+        "Contraseña": {
+          "type": "string",
+          "example": "manuela123"
+        },
+        "Rol": {
+          "type": "integer",
+          "example": "2"
+        }
+      }
+    },
+
+    "Crearproducto": {
+      "type": "object",
+      "required": [
+        "Nombre",
+        "Detalle",
+        "Img",
+        "Valor"
+      ],
+      "properties": {
+        "Nombre": {
+          "type": "string",
+          "example": "hamburguesa"
+        },
+        "Detalle": {
+          "type": "string",
+          "example": "papas, ensalada, tocineta, gaseosa"
+        },
+        "Img": {
+          "type": "string",
+          "example": "picada"
+        },
+        "Valor": {
+          "type": "integer",
+          "example": 150000
+        }
+      }
+    },
+
+    "Actualizarproducto": {
+      "type": "object",
+      "required": [
+        "ID",
+        "Nombre_producto",
+        "Precio"
+      ],
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "example": 2
+        },
+        "Nombre_producto": {
+          "type": "string",
+          "example": "perro caliente"
+        },
+        "Precio": {
+          "type": "integer",
+          "example": 10000
+        }
+      }
+    },
+
+    "Eliminarproducto": {
+      "type": "object",
+      "required": [
+        "ID"
+      ],
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "example": 2
+        }
+      }
+    },
+
+    "CrearPedido": {
+      "type": "object",
+      "required": [
+        "Estado",
+        "id_producto",
+        "Pago",
+        "cantidad",
+        "id_Usuario"
+      ],
+      "properties": {
+        "Estado": {
+          "type": "string",
+          "example": "En preparación"
+        },
+        "Total": {
+          "type": "integer",
+          "example": 2
+        },
+        "Pago": {
+          "type": "integer",
+          "example": 25000
+        },
+        "Fecha": {
+          "type": "string",
+          "example": "2020-11-01 19:18:00"
+        },
+        "ID_Usuario": {
+          "type": "integer",
+          "example": 3
+        },
+        "Productos": {
+          "type": "array",
+          "xml": {
+            "name": "tag",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/CrearPedido"
+          }
+        }
+      }
+    },
+
+  
+
+    "EliminarPedido": {
+      "type": "object",
+      "required": [
+        "ID_Pedido"
+      ],
+      "properties": {
+        "ID_Pedido": {
+          "type": "integer",
+          "example": 4
+        }
+      }
+    },
+
+    "ActualizarPedido": {
+      "type": "object",
+      "required": [
+        "ID_Pedido",
+        "Estado"
+      ],
+      "properties": {
+        "ID_Pedido": {
+          "type": "integer",
+          "example": 2
+        },
+        "Estado": {
+          "type": "string",
+          "example": "En preparación"
+        }
+      }
+    }
+
+  }
+}
